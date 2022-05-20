@@ -1,26 +1,100 @@
+import { Link, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import axios from 'axios';
+import swal from 'sweetalert';
+
+import Botao from '../utils/Botao.js'
+import Paragrafo from '../utils/Paragrafo.js'
+
+import { ThreeDots } from 'react-loader-spinner';
 import { Container } from '../TelaInicial/style.js';
 
-function TelaCadastro() {
+import dotenv from 'dotenv';
+dotenv.config();
 
-    function postDadosLogin(e){
+function TelaCadastro() {
+    const arrayInputs = ['Nome', 'E-mail', 'Senha', 'Confirmar Senha'];
+    const [dadosCadastro, setDadosCadastro] = useState({
+        name: '', email: '', password: '', confirm: ''
+    });
+    const [disable, setDisable] = useState(false);
+    const [loading, setLoading] = useState(false);
+    
+    const navigate = useNavigate();
+    const URL = process.env.REACT_API; 
+
+    function limparDadosCadastro(){
+        setDadosCadastro({
+            email: '', password: ''
+        })
+    }
+
+    async function postDadosCadastro(){
+        try {
+            const objCadastro = {
+                name: dadosCadastro.name.trim(),
+                email: dadosCadastro.email.trim(),
+                password: dadosCadastro.password,
+                confirm: dadosCadastro.confirm
+            };
+
+            await axios.post(`${URL}/sign-up`, objCadastro);
+            swal('Cadastro realizado com sucesso!');
+            setTimeout(()=>{
+                navigate('/sign-in');
+            }, 1000);
+            
+        } catch (error) {
+            swal('Erro ao fazer cadastro');
+            setTimeout(()=>{
+                setDisable(false);
+                setLoading(false);
+                limparDadosCadastro();
+            }, 1000);
+        }
+    }
+
+    console.log(dadosCadastro); //apagar
+
+    function enviarDados(e){
         e.preventDefault();
+        setDisable(true);
+        setLoading(true);
+
+        postDadosCadastro();
     }
 
     return (  
         <Container>
-            <p>Nome do App</p>
-            <form onSubmit={postDadosLogin}>
+            <header>Your Memories</header>
+            <form onSubmit={enviarDados}>
                 <div className='inputs'>
-                    <input type="text" />
-                    <input type="email" />
-                    <input type="password" />
-                    <input type="password" />
+                    <input type="text" placeholder={arrayInputs[0]} required
+                    value={dadosCadastro.name} disabled={disable}
+                    onChange={(e)=>setDadosCadastro({...dadosCadastro, name: e.target.value})} />
+
+                    <input type="email" placeholder={arrayInputs[1]} required
+                    value={dadosCadastro.email} disabled={disable}
+                    onChange={(e)=>setDadosCadastro({...dadosCadastro, email: e.target.value})} />
+
+                    <input type="password" placeholder={arrayInputs[2]} required
+                    value={dadosCadastro.password} disabled={disable}
+                    onChange={(e)=>setDadosCadastro({...dadosCadastro, password: e.target.value})} />
+
+                    <input type="password" placeholder={arrayInputs[3]} required
+                    value={dadosCadastro.confirm} disabled={disable}
+                    onChange={(e)=>setDadosCadastro({...dadosCadastro, confirm: e.target.value})} />
                 </div>
-                <div className='botoes'>
-                    <button type='submit' />
+                <div className='botao'>
+                    {
+                        loading ? <Botao conteudo={<ThreeDots color="#fff" height={13} />} tipo="submit" disabled={disable} />
+                        : <Botao tipo='submit' conteudo='Cadastrar' disabled={disable} />
+                    }
                 </div>
             </form>
-            <p>Já possui cadastro? Faça login agora</p>
+            <Link to='/sign-in'>
+                <Paragrafo conteudo='Já possui cadastro? Faça login'/>
+            </Link>
         </Container>
     );
 }
