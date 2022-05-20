@@ -78,6 +78,11 @@ export const Container = styled.section`
         }
     }
 
+    a{
+        width: 100%;
+        height: auto;
+    }
+
     p{
         width: 100%;
         height: 30px;
