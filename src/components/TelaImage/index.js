@@ -20,7 +20,7 @@ function TelaImage() {
     const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
-    const URL = process.env.REACT_API; 
+    const URL = 'http://localhost:5000'; 
     const { dadosUsuario } = useContext(ContextUser);
     
     function limparDadosImage(){
@@ -64,7 +64,7 @@ function TelaImage() {
             <header>Adicionar imagem</header>
             <form onSubmit={enviarDados}>
                 <div className='inputs'>
-                    <input type="email" placeholder={arrayInputs[0]} required
+                    <input type="text" placeholder={arrayInputs[0]} required
                     value={dadosImagem.image} disabled={disable}
                     onChange={(e)=>setDadosImagem({...dadosImagem, image: e.target.value})} />
                 </div>

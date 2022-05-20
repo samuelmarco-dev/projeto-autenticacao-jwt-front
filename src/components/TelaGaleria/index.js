@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import swal from 'sweetalert';
 
-import { ContextUser } from '../api/contextUser';
+import ContextUser from '../api/contextUser.js';
 
 import { IoIosAddCircleOutline } from 'react-icons/io';
 import { Container } from './style.js';
@@ -12,11 +12,11 @@ function TelaGaleria() {
     const [imagens, setImagens] = useState([]);
     
     const navigate = useNavigate();
-    const URL = process.env.REACT_API;
+    const URL = 'http://localhost:5000';
     const { dadosUsuario } = useContext(ContextUser);
 
     useEffect(() => {
-        if(dadosUsuario.token === null && localStorage.getItem('token') === null){
+        if(localStorage.getItem('token') === null){
             swal('Você precisa estar logado para acessar essa página');
             setTimeout(() => {
                 navigate('/sign-in');
@@ -44,10 +44,14 @@ function TelaGaleria() {
         }
     }
 
+    function nomeProprio(nomeProprio) {
+        return `Seja bem-vindo(a), ${nomeProprio.charAt(0).toUpperCase() + nomeProprio.slice(1)}`;
+    }
+
     return (  
         <Container>
             <header>
-                <h1>Seja bem-vindo(a), João</h1>
+                <h1>{nomeProprio(localStorage.getItem('name'))}</h1>
                 <IoIosAddCircleOutline className='icon' onClick={()=>navigate('/image')}/>
             </header>
             <main>
@@ -55,20 +59,15 @@ function TelaGaleria() {
                 <section>
                     {
                         imagens.length > 0 ?
-                        <>
-                            <div>
-                                <img src="https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60" alt=""/>
-                                <p>Data: 01/05/2022</p>
-                            </div>
-                            <div>
-                                <img src="https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60" alt=""/>
-                                <p>Data: 01/05/2022</p>
-                            </div>
-                            <div>
-                                <img src="https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60" alt=""/>
-                                <p>Data: 01/05/2022</p>
-                            </div>
-                        </>
+                        imagens.map(imagem => {
+                            const { _id, image, date } = imagem;
+                            return(
+                                <div key={_id}>
+                                    <img src={image} alt='Imagem'/>
+                                    <p>Data: {date}</p>
+                                </div>
+                            )
+                        })
                         : 
                         <article className='galeria-vazia'>
                             <p>Não há fotos para serem exibidas. Cadastre suas fotos!</p>

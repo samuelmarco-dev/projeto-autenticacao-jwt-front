@@ -23,7 +23,7 @@ function TelaInicial() {
     const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
-    const URL = process.env.REACT_API; 
+    const URL = 'http://localhost:5000'; 
     const { dadosUsuario, setDadosUsuario } = useContext(ContextUser);
 
     function limparDadosLogin(){
@@ -48,8 +48,8 @@ function TelaInicial() {
                     email: dadosLogin.email,
                     name: data.name
                 });
-                localStorage('token', data.token);
-                localStorage('name', data.name);
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('name', data.name);
                 navigate('/');
             }, 1000);
         } catch (error) {

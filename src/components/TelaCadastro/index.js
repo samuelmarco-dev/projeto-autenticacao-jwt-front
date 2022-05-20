@@ -9,9 +9,6 @@ import Paragrafo from '../utils/Paragrafo.js'
 import { ThreeDots } from 'react-loader-spinner';
 import { Container } from '../TelaInicial/style.js';
 
-import dotenv from 'dotenv';
-dotenv.config();
-
 function TelaCadastro() {
     const arrayInputs = ['Nome', 'E-mail', 'Senha', 'Confirmar Senha'];
     const [dadosCadastro, setDadosCadastro] = useState({
@@ -21,11 +18,11 @@ function TelaCadastro() {
     const [loading, setLoading] = useState(false);
     
     const navigate = useNavigate();
-    const URL = process.env.REACT_API; 
+    const URL = 'http://localhost:5000'; 
 
     function limparDadosCadastro(){
         setDadosCadastro({
-            email: '', password: ''
+            email: '', name: '', password: '', confirm: ''
         })
     }
 
